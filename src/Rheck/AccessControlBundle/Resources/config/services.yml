@@ -1,0 +1,7 @@
+parameters:
+    access.control.service.class: Rheck\AccessControlBundle\Service\AccessControlService
+
+services:
+    access.control.service:
+        class:     %access.control.service%
+        arguments: [@doctrine.orm.entity_manager, @security.context]
