@@ -1,5 +1,5 @@
 parameters:
-    rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Service\AccessControlDriver
+    rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Driver\AccessControlDriver
 
     rheck.access_control.access.control.service.class: Rheck\AccessControlBundle\Service\AccessControlService
 
