@@ -28,11 +28,17 @@ class AccessControlDriver
         $object = new \ReflectionObject($controller[0]);
         $method = $object->getMethod($controller[1]);
 
-        foreach ($this->reader->getMethodAnnotations($method) as $configuration) {
-            if ($configuration instanceof PermissionAccess) {
-                $permissionsList = $configuration->list;
-                if ($this->accessControlService->hasPermissions($permissionsList, $configuration->context, $configuration->criteria) == false) {
-                    throw new AccessDeniedHttpException();
+        foreach ($this->reader->getMethodAnnotations($method) as $methodAnnotation) {
+            if ($methodAnnotation instanceof PermissionAccess) {
+                $hasPermission = $this->accessControlService->checkPermission(
+                    $methodAnnotation->getPermissions(),
+                    $methodAnnotation->getContext(),
+                    $methodAnnotation->getCriteria(),
+                    $methodAnnotation->getStrategy()
+                );
+
+                if (!$hasPermission) {
+                    throw new AccessDeniedException('You are not allowed to access this route.');
                 }
             }
         }
