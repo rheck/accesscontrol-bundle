@@ -109,7 +109,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
 
         $permissionContext = $permissionContextRepository->findOneByName($contextName);
         if (is_null($permissionContext)) {
-            $permissionContext = $this->createContext($contextName);
+            $permissionContext = $this->createPermissionContext($contextName);
         }
 
         $permission = new Permission();
