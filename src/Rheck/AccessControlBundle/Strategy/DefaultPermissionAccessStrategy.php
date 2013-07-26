@@ -2,6 +2,8 @@
 
 namespace Rheck\AccessControlBundle\Strategy;
 
+use Rheck\AccessControlBundle\Entity\Permission;
+use Rheck\AccessControlBundle\Entity\PermissionContext;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\PersistentCollection;
