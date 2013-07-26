@@ -38,7 +38,7 @@ class AccessControlDriver
                 );
 
                 if (!$hasPermission) {
-                    throw new AccessDeniedException('You are not allowed to access this route.');
+                    throw new AccessDeniedHttpException('You are not allowed to access this route.');
                 }
             }
         }
