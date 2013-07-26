@@ -2,22 +2,26 @@
 
 namespace Rheck\AccessControlBundle\Annotation;
 
+use Rheck\AccessControlBundle\Entity\PermissionContext;
+
 /**
  * @Annotation
  */
 class PermissionAccess
 {
-    public $list;
-    public $context = 'SYSTEM';
-    public $criteria = 'AND';
+    private $permissions = array();
+    private $context     = PermissionContext::DEFAULT_CONTEXT;
+    private $criteria    = 'AND';
+    private $strategy    = "rheck.access_control.default.strategy";
 
-    public function __construct($options)
+    public function __construct(array $options)
     {
         if (isset($options['value'])) {
-            $options['list'] = is_array($options['value']) ? $options['value'] : array($options['value']);
-            unset($options['value']);
-        } elseif (isset($options['list'])) {
-            $options['list'] = is_array($options['list']) ? $options['list'] : array($options['list']);
+            $options['permissions'] = $options['value'];
+        }
+
+        if (isset($options['permissions'])) {
+            $options['permissions'] = is_array($options['permissions']) ? $options['permissions'] : array($options['permissions']);
         }
 
         foreach ($options as $key => $value) {
@@ -29,9 +33,9 @@ class PermissionAccess
         }
     }
 
-    public function getList()
+    public function getPermissions()
     {
-        return $this->list;
+        return $this->permissions;
     }
 
     public function getContext()
@@ -42,5 +46,10 @@ class PermissionAccess
     public function getCriteria()
     {
         return $this->criteria;
+    }
+
+    public function getStrategy()
+    {
+        return $this->strategy;
     }
 }
