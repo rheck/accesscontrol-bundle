@@ -44,7 +44,9 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
 
         $hasPermissionsArray = explode('.', $this->hasPermissions);
 
-        $allowedPermissions = $this->getPermissions($loggedUser, array_shift($hasPermissionsArray));
+        array_shift($hasPermissionsArray);
+
+        $allowedPermissions = $this->getPermissions($loggedUser, $hasPermissionsArray);
 
         foreach ($permissions as $key => $permission) {
             $permission = mb_strtoupper($permission);
@@ -74,7 +76,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
                 $permissions = array();
 
                 foreach ($object as $o) {
-                    $permissions = array_merge($permissions, $o->getPermissions());
+                    $permissions = array_merge($permissions, $o->getPermissions()->toArray());
                 }
 
                 return $permissions;
