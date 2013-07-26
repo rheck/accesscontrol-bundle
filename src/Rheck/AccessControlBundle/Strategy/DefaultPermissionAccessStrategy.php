@@ -119,8 +119,8 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         $permission->setLabel($permissionName);
         $permission->setPermissionContext($permissionContext);
 
-        $this->em->persist($permission);
-        $this->em->flush();
+        $this->objectManager->persist($permission);
+        $this->objectManager->flush();
 
         return $permission;
     }
