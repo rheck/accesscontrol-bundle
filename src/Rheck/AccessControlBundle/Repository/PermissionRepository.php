@@ -10,10 +10,10 @@ class PermissionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('pe')
             ->select('p')
-            ->from('ConradCaineCoreLibraryEntityBundle:Permission', 'p')
-            ->join('p.permissionContext', 'c')
+            ->from('RheckAccessControlBundle:Permission', 'p')
+            ->join('p.permissionContext', 'pc')
             ->where('p.name = :permissionName')
-            ->andWhere('c.name = :contextName');
+            ->andWhere('pc.name = :contextName');
 
         $qb->setParameter('permissionName', $permissionName);
         $qb->setParameter('contextName', $contextName);
