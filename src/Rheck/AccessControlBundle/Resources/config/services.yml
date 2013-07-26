@@ -1,7 +1,21 @@
 parameters:
-    access.control.service.class: Rheck\AccessControlBundle\Service\AccessControlService
+    rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Service\AccessControlDriver
+
+    rheck.access_control.access.control.service.class: Rheck\AccessControlBundle\Service\AccessControlService
+
+    rheck.access_control.default.strategy.class: Rheck\AccessControlBundle\Strategy\DefaultPermissionAccessStrategy
 
 services:
-    access.control.service:
-        class:     %access.control.service%
-        arguments: [@doctrine.orm.entity_manager, @security.context]
+    rheck.access_control.access_control.annotation_driver:
+        class:     %rheck.access_control.access_control.annotation_driver.class%
+        arguments: [@annotation_reader, @rheck.access_control.access.control.service]
+        tags:
+            -  { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    rheck.access_control.access.control.service:
+        class:     %rheck.access_control.access.control.service%
+        arguments: [@service_container]
+
+    rheck.access_control.default.strategy:
+        class:     %rheck.access_control.default.strategy.class%
+        arguments: [@doctrine.orm.entity_manager, @security.context, %rheck_access_control.has_permissions%]
