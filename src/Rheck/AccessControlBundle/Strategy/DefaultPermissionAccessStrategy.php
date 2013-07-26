@@ -102,7 +102,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
             $reflectionProperty->setAccessible(false);
         }
 
-        $this->getPermissions($propertyValue, $objectArray);
+        return $this->getPermissions($propertyValue, $objectArray);
     }
 
     public function createPermission($permissionName, $contextName)
