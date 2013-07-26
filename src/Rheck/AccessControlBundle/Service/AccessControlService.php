@@ -2,99 +2,59 @@
 
 namespace Rheck\AccessControlBundle\Service;
 
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Rheck\AccessControlBundle\Exception\InvalidReturnStrategyException;
+use Rheck\AccessControlBundle\Exception\MissingInterfaceException;
+use Rheck\AccessControlBundle\Exception\StrategyNotFoundException;
 use Symfony\Component\Security\Core\SecurityContext;
 use Doctrine\ORM\EntityManager;
 
 class AccessControlService
 {
-    const HAS_PERMISSION   = 1;
-    const HASNT_PERMISSION = 2;
+    const STRATEGY_INTERFACE = 'Rheck\AccessControlBundle\Strategy\PermissionAccessStrategyInterface';
 
-    protected $securityContext;
-    protected $entityManager;
+    protected $serviceContainer;
 
-    public function __construct(EntityManager $entityManager, SecurityContext $securityContext)
+    public function __construct($serviceContainer)
     {
-        $this->entityManager   = $entityManager;
-        $this->securityContext = $securityContext;
+        $this->serviceContainer = $serviceContainer;
     }
 
-    public function hasPermissions($permissionsToCheck, $context = PermissionContext::DEFAULT_CONTEXT, $criteria = "AND")
+    public function getServiceContainer()
     {
-        if (is_null($context)) {
-            $context = PermissionContext::DEFAULT_CONTEXT;
-        }
-
-        $context   = strtoupper($context);
-        $authToken = $this->securityContext->getToken();
-        if (is_null($authToken)) {
-            return false;
-        }
-
-        $loggedUser = $authToken->getUser();
-        if (is_null($loggedUser)) {
-            return false;
-        }
-
-        if (!is_array($permissionsToCheck)) {
-            $singlePerm         = $permissionsToCheck;
-            $permissionsToCheck = array($singlePerm);
-        }
-
-        $permissionRepository = $this->entityManager->getRepository('RheckAccessControlBundle:Permission');
-        $numPermissions       = sizeof($permissionsToCheck);
-
-        foreach ($loggedUser->getUserGroups() as $userGroup) {
-            $rolePermissions = $userGroup->getPermissions();
-            foreach ($permissionsToCheck as $key => $permissionName) {
-                $permissionName   = strtoupper($permissionName);
-                $permissionToFind = $permissionRepository->findOneByNameAndContext($permissionName, $context);
-                if (is_null($permissionToFind)) {
-                    $permissionToFind = $this->createPermission($permissionName, $context);
-                }
-
-                if (in_array($permissionToFind, $rolePermissions->toArray())) {
-                    unset($permissionsToCheck[$key]);
-                }
-            }
-
-            $permissionsToCheck = array_values($permissionsToCheck);
-        }
-
-        if ((($criteria == "AND") && (sizeof($permissionsToCheck) == 0)) ||
-            (($criteria == "OR") && (sizeof($permissionsToCheck) < $numPermissions))) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->serviceContainer;
     }
 
-    public function createPermission($permissionName, $contextName)
+    public function checkPermission($permissions, $context, $criteria, $strategy)
     {
-        $permissionContextRepository = $this->entityManager->getRepository('RheckAccessControlBundle:PermissionContext');
-
-        $permissionContext = $permissionContextRepository->findOneByName($contextName);
-        if (is_null($permissionContext)) {
-            $permissionContext = $this->createContext($contextName);
+        try {
+            $strategy = $this->getServiceContainer()->get($strategy);
+        } catch (ServiceNotFoundException $e) {
+            throw new StrategyNotFoundException($strategy);
         }
 
-        $permission = new Permission();
-        $permission->setName($permissionName);
-        $permission->setLabel($permissionName);
-        $permission->setPermissionContext($permissionContext);
+        $classImplementations = class_implements($strategy);
+        if (!in_array(self::STRATEGY_INTERFACE, $classImplementations)) {
+            throw new MissingInterfaceException(
+                sprintf('Your strategy must implement the interface: %s', self::STRATEGY_INTERFACE)
+            );
+        }
 
-        $this->em->persist($permission);
-        $this->em->flush();
+        $hasPermission = $strategy->run(
+            $permissions,
+            $context,
+            $criteria
+        );
 
-        return $permission;
-    }
+        if (!is_bool($hasPermission)) {
+            throw new InvalidReturnStrategyException(
+                sprintf(
+                    'Your "run" method of Strategy must return a boolean value, %s given.',
+                    gettype($hasPermission)
+                )
+            );
+        }
 
-    public function createPermissionContext($contextName)
-    {
-        $permissionContext = new PermissionContext();
-        $permissionContext->setName($contextName);
-        $permissionContext->setLabel($contextName);
-
-        return $permissionContext;
+        return $hasPermission;
     }
 }
