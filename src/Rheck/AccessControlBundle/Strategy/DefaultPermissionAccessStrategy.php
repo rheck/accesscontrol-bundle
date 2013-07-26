@@ -105,7 +105,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
 
     public function createPermission($permissionName, $contextName)
     {
-        $permissionContextRepository = $this->entityManager->getRepository('RheckAccessControlBundle:PermissionContext');
+        $permissionContextRepository = $this->objectManager->getRepository('RheckAccessControlBundle:PermissionContext');
 
         $permissionContext = $permissionContextRepository->findOneByName($contextName);
         if (is_null($permissionContext)) {
