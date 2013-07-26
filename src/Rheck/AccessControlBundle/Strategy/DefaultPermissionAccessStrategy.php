@@ -58,7 +58,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
                 $persistedPermission = $this->createPermission($permission, $context);
             }
 
-            if (in_array($persistedPermission, $allowedPermissions->toArray())) {
+            if (in_array($persistedPermission, $allowedPermissions)) {
                 unset($permissions[$key]);
             }
         }
