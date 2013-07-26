@@ -2,6 +2,7 @@
 
 namespace Rheck\AccessControlBundle\Strategy;
 
+use Symfony\Component\Security\Core\SecurityContextInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\PersistentCollection;
 
@@ -13,7 +14,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
     protected $objectManager;
     protected $hasPermissions;
 
-    public function __construct(ObjectManager $objectManager, SecurityContext $securityContext, $hasPermissions)
+    public function __construct(ObjectManager $objectManager, SecurityContextInterface $securityContext, $hasPermissions)
     {
         $this->objectManager = $objectManager;
         $this->securityContext = $securityContext;
