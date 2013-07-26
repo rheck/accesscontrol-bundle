@@ -18,6 +18,7 @@ class PermissionAccess
     {
         if (isset($options['value'])) {
             $options['permissions'] = $options['value'];
+            unset($options['value']);
         }
 
         if (isset($options['permissions'])) {
