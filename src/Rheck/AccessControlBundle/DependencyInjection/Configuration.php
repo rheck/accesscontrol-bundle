@@ -20,9 +20,11 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('rheck_access_control');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->scalarNode('has_permissions')->defaultValue('user')->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }

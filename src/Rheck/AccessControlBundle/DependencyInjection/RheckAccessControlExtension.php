@@ -22,6 +22,8 @@ class RheckAccessControlExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('rheck_access_control.has_permissions', $config['has_permissions']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
