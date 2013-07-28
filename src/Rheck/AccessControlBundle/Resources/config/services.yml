@@ -5,6 +5,8 @@ parameters:
 
     rheck.access_control.default.strategy.class: Rheck\AccessControlBundle\Strategy\DefaultPermissionAccessStrategy
 
+    rheck.access_control.access.control.extension.class: Rheck\AccessControlBundle\ExtensionAccessControlExtension
+
 services:
     rheck.access_control.access_control.annotation_driver:
         class:     %rheck.access_control.access_control.annotation_driver.class%
@@ -19,3 +21,9 @@ services:
     rheck.access_control.default.strategy:
         class:     %rheck.access_control.default.strategy.class%
         arguments: [@doctrine.orm.entity_manager, @security.context, %rheck_access_control.has_permissions%]
+
+    rheck.access_control.access.control.extension:
+        class:  %rheck.access_control.access.control.extension.class%
+        arguments:  [@rheck.access_control.access.control.service]
+        tags:
+            -  { name: twig.extension }
