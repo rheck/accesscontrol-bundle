@@ -1,13 +1,23 @@
 {
     "name": "rheck/accesscontrol-bundle",
     "description": "Bundle to control the user access.",
+    "keywords": ["annotations","authorization","access","permission","permission access"],
+    "homepage": "",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+        "name": "Ricardo Heck",
+        "email": "ricardoh3ck@gmail.com"
+        }
+    ],
+    "minimumstability": "dev",
     "require": {
         "php": ">= 5.3.3",
         "symfony/symfony": "2.3.*"
     },
     "autoload": {
-        "psr-0": {
-            "Rheck\\AccessControlBundle\\": "src/"
-        }
-    }
+        "psr-0": { "Rheck\\AccessControlBundle": "" }
+    },
+    "target-dir": "Rheck/AccessControlBundle"
 }
