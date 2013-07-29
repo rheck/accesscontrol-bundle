@@ -4,7 +4,7 @@ namespace Rheck\AccessControlBundle\Extension;
 
 use Rheck\AccessControlBundle\Service\AccessControlService;
 
-class AccessControlExtension
+class AccessControlExtension extends \Twig_Extension
 {
     protected $accessControlService;
 
