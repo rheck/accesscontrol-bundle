@@ -5,7 +5,7 @@ parameters:
 
     rheck.access_control.default.strategy.class: Rheck\AccessControlBundle\Strategy\DefaultPermissionAccessStrategy
 
-    rheck.access_control.access.control.extension.class: Rheck\AccessControlBundle\ExtensionAccessControlExtension
+    rheck.access_control.access.control.extension.class: Rheck\AccessControlBundle\Extension\AccessControlExtension
 
 services:
     rheck.access_control.access_control.annotation_driver:
