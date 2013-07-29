@@ -1,4 +1,3 @@
-accesscontrol-bundle
-====================
+# Access Control Bundle
 
-Bundle to control the access of logged user.
+[![Build Status](https://travis-ci.org/rheck/accesscontrol-bundle.png)](https://travis-ci.org/rheck/accesscontrol-bundle)
