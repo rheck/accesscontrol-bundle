@@ -6,7 +6,10 @@ tools:
         enabled: true
         filter:
             excluded_paths: ["vendor/*"]
-    php_mess_detector: true
+    php_mess_detector: 
+        enabled: true
+        filter:
+            excluded_paths: ["vendor/*"]
     php_analyzer:
         enabled: true
         filter:
