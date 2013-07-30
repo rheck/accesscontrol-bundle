@@ -1,0 +1,28 @@
+before_commands:
+    - composer install --dev
+tools:
+    php_cs_fixer:
+        enabled: true
+        config:
+            level: all
+    php_code_coverage:
+        enabled: true
+        config_path: ~
+        test_command: phpunit
+        # We don't use this (yet) as we need to tremendously increase coverage
+        #only_changesets: true
+        filter:
+            paths: ["*"]
+            excluded_paths: ["vendor/*"]
+    php_mess_detector:
+        enabled: true
+        config:
+            rulesets:
+                - codesize
+                - unusedcode
+                - naming
+    php_analyzer:
+        enabled: true
+        filter:
+            paths: ["*"]
+            excluded_paths: ["vendor/*"]
