@@ -52,6 +52,7 @@ CREATE TABLE rheck_permissions (
 ```
 
 **3. config.yml**
+
 The permission must have relationship with an entity user or other one with realtionship with user as will be logged in and must implement an interface.
 
 Example:
