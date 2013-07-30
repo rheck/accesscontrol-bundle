@@ -25,6 +25,7 @@ $bundles = array(
 
 ### Configuration
 If you want to use the default Bundle Strategy you must to create the databases of permissions.
+
 **1. Doctrine Schema Update Command**
 ```bash
 php app/console doctrine:schema:update --force
