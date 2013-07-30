@@ -2,10 +2,8 @@
 
 namespace Rheck\AccessControlBundle\Strategy;
 
-use Rheck\AccessControlBundle\Entity\Permission;
-use Rheck\AccessControlBundle\Entity\PermissionContext;
 use Symfony\Component\Security\Core\SecurityContextInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Rheck\AccessControlBundle\Service\PermissionService;
 use Doctrine\ORM\PersistentCollection;
 
 class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterface
@@ -13,20 +11,19 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
     const HAS_PERMISSION   = 1;
     const HASNT_PERMISSION = 2;
 
-    protected $objectManager;
+    protected $permissionService;
+    protected $securityContext;
     protected $hasPermissions;
 
-    public function __construct(ObjectManager $objectManager, SecurityContextInterface $securityContext, $hasPermissions)
+    public function __construct(SecurityContextInterface $securityContext, PermissionService $permissionService, $hasPermissions)
     {
-        $this->objectManager = $objectManager;
-        $this->securityContext = $securityContext;
-        $this->hasPermissions = $hasPermissions;
+        $this->securityContext   = $securityContext;
+        $this->permissionService = $permissionService;
+        $this->hasPermissions    = $hasPermissions;
     }
 
-    public function run($permissions, $context, $criteria)
+    public function getLoggedUser()
     {
-        $context = mb_strtoupper($context);
-
         $authToken = $this->securityContext->getToken();
         if (is_null($authToken) || $authToken->isAuthenticated() === false) {
             return false;
@@ -37,26 +34,28 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
             return false;
         }
 
+        return $loggedUser;
+    }
+
+    public function run($permissions, $context, $criteria)
+    {
+        $loggedUser = $this->getLoggedUser();
+        if (!$loggedUser) {
+            return false;
+        }
+
         if (!is_array($permissions)) {
             $permissions = array($permissions);
         }
 
-        $permissionRepository = $this->objectManager->getRepository('RheckAccessControlBundle:Permission');
         $countPermissions     = count($permissions);
-
-        $hasPermissionsArray = explode('.', $this->hasPermissions);
-
-        array_shift($hasPermissionsArray);
-
-        $allowedPermissions = $this->getPermissions($loggedUser, $hasPermissionsArray);
+        $context              = mb_strtoupper($context);
+        $allowedPermissions   = $this->getUserPermissions($loggedUser);
 
         foreach ($permissions as $key => $permission) {
             $permission = mb_strtoupper($permission);
 
-            $persistedPermission = $permissionRepository->findOneByNameAndContext($permission, $context);
-            if (is_null($persistedPermission)) {
-                $persistedPermission = $this->createPermission($permission, $context);
-            }
+            $persistedPermission = $this->permissionService->getPersistedPermission($permission, $context);
 
             if (in_array($persistedPermission, $allowedPermissions)) {
                 unset($permissions[$key]);
@@ -69,6 +68,15 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         } else {
             return false;
         }
+    }
+
+    public function getUserPermissions($loggedUser)
+    {
+        $hasPermissionsArray = explode('.', $this->hasPermissions);
+
+        array_shift($hasPermissionsArray);
+
+        return $this->getPermissions($loggedUser, $hasPermissionsArray);
     }
 
     public function getPermissions($object, $objectArray)
@@ -105,32 +113,4 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         return $this->getPermissions($propertyValue, $objectArray);
     }
 
-    public function createPermission($permissionName, $contextName)
-    {
-        $permissionContextRepository = $this->objectManager->getRepository('RheckAccessControlBundle:PermissionContext');
-
-        $permissionContext = $permissionContextRepository->findOneByName($contextName);
-        if (is_null($permissionContext)) {
-            $permissionContext = $this->createPermissionContext($contextName);
-        }
-
-        $permission = new Permission();
-        $permission->setName($permissionName);
-        $permission->setLabel($permissionName);
-        $permission->setPermissionContext($permissionContext);
-
-        $this->objectManager->persist($permission);
-        $this->objectManager->flush();
-
-        return $permission;
-    }
-
-    public function createPermissionContext($contextName)
-    {
-        $permissionContext = new PermissionContext();
-        $permissionContext->setName($contextName);
-        $permissionContext->setLabel($contextName);
-
-        return $permissionContext;
-    }
 }

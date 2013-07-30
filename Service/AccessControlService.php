@@ -25,20 +25,49 @@ class AccessControlService
         return $this->serviceContainer;
     }
 
-    public function checkPermission($permissions, $context, $criteria, $strategy)
+    public function getStrategy($strategy)
     {
+        $strategyContainer = $this->getServiceContainer();
+
         try {
-            $strategy = $this->getServiceContainer()->get($strategy);
+            return $strategyContainer->get($strategy);
         } catch (ServiceNotFoundException $e) {
             throw new StrategyNotFoundException($strategy);
         }
+    }
 
+    public function checkStrategyImplementation($strategy)
+    {
         $classImplementations = class_implements($strategy);
+
         if (!in_array(self::STRATEGY_INTERFACE, $classImplementations)) {
             throw new MissingInterfaceException(
                 sprintf('Your strategy must implement the interface: %s', self::STRATEGY_INTERFACE)
             );
         }
+
+        return true;
+    }
+
+    public function getStrategyReturn($strategyReturn)
+    {
+        if (is_bool($strategyReturn)) {
+            return $strategyReturn;
+        }
+
+        throw new InvalidReturnStrategyException(
+            sprintf(
+                'Your "run" method of Strategy must return a boolean value, %s given.',
+                gettype($strategyReturn)
+            )
+        );
+    }
+
+    public function checkPermission($permissions, $context, $criteria, $strategy)
+    {
+        $strategy = $this->getStrategy($strategy);
+
+        $this->checkStrategyImplementation($strategy);
 
         $hasPermission = $strategy->run(
             $permissions,
@@ -46,15 +75,6 @@ class AccessControlService
             $criteria
         );
 
-        if (!is_bool($hasPermission)) {
-            throw new InvalidReturnStrategyException(
-                sprintf(
-                    'Your "run" method of Strategy must return a boolean value, %s given.',
-                    gettype($hasPermission)
-                )
-            );
-        }
-
-        return $hasPermission;
+        return $this->checkStrategyReturn($hasPermission);
     }
 }

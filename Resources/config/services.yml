@@ -1,7 +1,9 @@
 parameters:
     rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Driver\AccessControlDriver
 
-    rheck.access_control.access.control.service.class: Rheck\AccessControlBundle\Service\AccessControlService
+    rheck.access_control.access.control.service.class:     Rheck\AccessControlBundle\Service\AccessControlService
+    rheck.access_control.permission.service.class:         Rheck\AccessControlBundle\Service\PermissionService
+    rheck.access_control.permission_context.service.class: Rheck\AccessControlBundle\Service\PermissionContextService
 
     rheck.access_control.default.strategy.class: Rheck\AccessControlBundle\Strategy\DefaultPermissionAccessStrategy
 
@@ -17,6 +19,14 @@ services:
     rheck.access_control.access.control.service:
         class:     %rheck.access_control.access.control.service.class%
         arguments: [@service_container]
+
+    rheck.access_control.permission.service:
+        class:     %rheck.access_control.permission.service.class%
+        arguments: [@doctrine.orm.entity_manager, @rheck.access_control.permission_context.service]
+
+    rheck.access_control.permission_context.service:
+        class:     %rheck.access_control.permission_context.service.class%
+        arguments: [@doctrine.orm.entity_manager
 
     rheck.access_control.default.strategy:
         class:     %rheck.access_control.default.strategy.class%

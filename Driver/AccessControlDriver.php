@@ -29,17 +29,22 @@ class AccessControlDriver
         $method = $object->getMethod($controller[1]);
 
         foreach ($this->reader->getMethodAnnotations($method) as $methodAnnotation) {
-            if ($methodAnnotation instanceof PermissionAccess) {
-                $hasPermission = $this->accessControlService->checkPermission(
-                    $methodAnnotation->getPermissions(),
-                    $methodAnnotation->getContext(),
-                    $methodAnnotation->getCriteria(),
-                    $methodAnnotation->getStrategy()
-                );
+            $this->checkPermission($methodAnnotation);
+        }
+    }
 
-                if (!$hasPermission) {
-                    throw new AccessDeniedHttpException('You are not allowed to access this route.');
-                }
+    public function checkPermission($methodAnnotation)
+    {
+        if ($methodAnnotation instanceof PermissionAccess) {
+            $hasPermission = $this->accessControlService->checkPermission(
+                $methodAnnotation->getPermissions(),
+                $methodAnnotation->getContext(),
+                $methodAnnotation->getCriteria(),
+                $methodAnnotation->getStrategy()
+            );
+
+            if (!$hasPermission) {
+                throw new AccessDeniedHttpException('You are not allowed to access this route.');
             }
         }
     }
