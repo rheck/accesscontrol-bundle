@@ -23,16 +23,84 @@ $bundles = array(
 );
 ```
 
+### Configuration
+If you want to use the default Bundle Strategy you must to create the databases of permissions.
+**1. Doctrine Schema Update Command**
+```bash
+php app/console doctrine:schema:update --force
+```
+**2. Create on the database directly (MySQL Example)**
+```sql
+CREATE TABLE rheck_permissioncontexts (
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `label` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (id)
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+
+CREATE TABLE rheck_permissions (
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `label` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(255) DEFAULT NULL,
+    `permissionContext_id` INT DEFAULT NULL,
+    INDEX IDX_538F31584B364D6E (permissionContext_id),
+    PRIMARY KEY (id)
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+```
+
+**3. config.yml**
+The permission must have relationship with an entity user or other one with realtionship with user as will be logged in and must implement an interface.
+
+Example:
+```php
+use Rheck\AccessControlBundle\Entity\PermissionAccessInterface;
+
+class User implements PermissionAccessInterface
+{
+    protected $permissions;
+    
+    public function __construct()
+    {
+        $this->permissions = new ArrayCollection();
+    }
+
+    public function addPermission(Permission $permission)
+    {
+        $this->permissions->add($permission);
+    }
+
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+}
+```
+
+Example 1: If you want to validate the permission with my user entity directly. The configuration is:
+```yaml
+rheck_access_control:
+    has_permissions: user
+```
+
+Example 2: Suposing that I have an entity called UserGroups and it have relationship ManyToMany with user. The configuration is:
+```yaml
+rheck_access_control:
+    has_permissions: user.userGroups
+```
+
 ### Usage
 **You have two ways to check the permissions.** 
 
 For both ways you have 4 fields:
   
 
- 1. ***Permissions***: can be a single parameter or an array;
- 2. ***Context***: you can group the permissions by a context, default value is "System";
- 3. ***Criteria***: you can choose how is the criteria to check the permissions, its value can be "AND" or "OR". The default value is "AND";
- 4. ***Strategy***: you can create your own strategy of validation. An example follow at the end of this file.
+ ***1. Permissions***: can be a single parameter or an array;
+ ***2. Context***: you can group the permissions by a context, default value is "System";
+ ***3. Criteria***: you can choose how is the criteria to check the permissions, its value can be "AND" or "OR". The default value is "AND";
+ ***4. Strategy***: you can create your own strategy of validation. An example follow at the end of this file.
 
 #### 1. Validation By Annotation
 
