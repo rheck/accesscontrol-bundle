@@ -1,5 +1,9 @@
 # Access Control Bundle #
 
+[![Build Status](https://travis-ci.org/rheck/accesscontrol-bundle.png)](https://travis-ci.org/rheck/accesscontrol-bundle)
+[![Total Downloads](https://poser.pugx.org/rheck/accesscontrol-bundle/d/total.png)](https://packagist.org/packages/rheck/accesscontrol-bundle)
+[![Latest Stable Version](https://poser.pugx.org/rheck/accesscontrol-bundle/v/stable.png)](https://packagist.org/packages/rheck/accesscontrol-bundle)
+
 This Bundle is a easy solution for the route access control. You can choose to use the default strategy of the Bundle or create your own custom.
 
 ### How it works
