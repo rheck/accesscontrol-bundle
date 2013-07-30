@@ -99,7 +99,7 @@ You must to return a boolean value.
 
 ### 2. Register your strategy as service:
 After the creation of strategy you must to register it as service, like bellow:
-```yml
+```yaml
 parameters:
     my.custom.strategy.class: MyNamespace\Strategy\CustomStrategy
 services:
