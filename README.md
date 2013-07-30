@@ -51,7 +51,7 @@ CREATE TABLE rheck_permissions (
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
 ```
 
-**3. config.yml**
+**3. Entity**
 
 The permission must have relationship with an entity user or other one with realtionship with user as will be logged in and must implement an interface.
 
@@ -80,6 +80,8 @@ class User implements PermissionAccessInterface
 
 }
 ```
+
+**4. config.yml**
 
 Example 1: If you want to validate the permission with my user entity directly. The configuration is:
 ```yaml
