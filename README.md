@@ -102,8 +102,11 @@ For both ways you have 4 fields:
   
 
  ***1. Permissions***: can be a single parameter or an array;
+ 
  ***2. Context***: you can group the permissions by a context, default value is "System";
+ 
  ***3. Criteria***: you can choose how is the criteria to check the permissions, its value can be "AND" or "OR". The default value is "AND";
+ 
  ***4. Strategy***: you can create your own strategy of validation. An example follow at the end of this file.
 
 #### 1. Validation By Annotation
