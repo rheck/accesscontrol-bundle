@@ -2,15 +2,13 @@
 
 namespace Rheck\AccessControlBundle\Strategy;
 
+use Rheck\AccessControlBundle\Service\AccessControlService;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Rheck\AccessControlBundle\Service\PermissionService;
 use Doctrine\ORM\PersistentCollection;
 
 class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterface
 {
-    const HAS_PERMISSION   = 1;
-    const HASNT_PERMISSION = 2;
-
     protected $permissionService;
     protected $securityContext;
     protected $hasPermissions;
@@ -39,15 +37,11 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
 
     public function run($permissions, $context, $criteria)
     {
-        $loggedUser = $this->getLoggedUser();
-        if (!$loggedUser) {
+        if (false === ($loggedUser = $this->getLoggedUser())) {
             return false;
         }
 
-        if (!is_array($permissions)) {
-            $permissions = array($permissions);
-        }
-
+        $permissions          = is_array($permissions) ? $permissions : array($permissions);
         $countPermissions     = count($permissions);
         $context              = mb_strtoupper($context);
         $allowedPermissions   = $this->getUserPermissions($loggedUser);
@@ -62,12 +56,12 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
             }
         }
 
-        if ((($criteria == "AND") && (sizeof($permissions) == 0)) ||
-            (($criteria == "OR") && (sizeof($permissions) < $countPermissions))) {
+        if ((($criteria == AccessControlService::CRITERIA_AND) && (sizeof($permissions) == 0)) ||
+            (($criteria == AccessControlService::CRITERIA_OR) && (sizeof($permissions) < $countPermissions))) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function getUserPermissions($loggedUser)

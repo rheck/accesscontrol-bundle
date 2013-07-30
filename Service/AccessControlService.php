@@ -13,6 +13,9 @@ class AccessControlService
 {
     const STRATEGY_INTERFACE = 'Rheck\AccessControlBundle\Strategy\PermissionAccessStrategyInterface';
 
+    const CRITERIA_AND = "AND";
+    const CRITERIA_OR  = "OR";
+
     protected $serviceContainer;
 
     public function __construct($serviceContainer)
