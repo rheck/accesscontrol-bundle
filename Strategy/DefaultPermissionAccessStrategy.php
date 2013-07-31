@@ -56,12 +56,20 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
             }
         }
 
-        if ((($criteria == AccessControlService::CRITERIA_AND) && (sizeof($permissions) == 0)) ||
-            (($criteria == AccessControlService::CRITERIA_OR) && (sizeof($permissions) < $countPermissions))) {
-            return true;
-        }
+        $andCriteria = $this->checkAndCriteria($permissions, $criteria);
+        $orCriteria  = $this->checkOrCriteria($permissions, $countPermissions, $criteria);
 
-        return false;
+        return $andCriteria || $orCriteria;
+    }
+
+    public function checkAndCriteria($permissions, $criteria)
+    {
+        return $criteria == AccessControlService::CRITERIA_AND && sizeof($permissions) == 0;
+    }
+
+    public function checkOrCriteria($permissions, $countPermissions, $criteria)
+    {
+        return $criteria == AccessControlService::CRITERIA_OR && sizeof($permissions) < $countPermissions;
     }
 
     public function getAllowedPermissions($loggedUser)
