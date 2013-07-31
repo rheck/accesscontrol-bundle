@@ -2,6 +2,7 @@
 
 namespace Rheck\AccessControlBundle\Strategy;
 
+use Rheck\AccessControlBundle\Factory\CriteriaFactory;
 use Rheck\AccessControlBundle\Service\AccessControlService;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Rheck\AccessControlBundle\Service\PermissionService;
@@ -13,10 +14,13 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
     protected $securityContext;
     protected $hasPermissions;
 
-    public function __construct(SecurityContextInterface $securityContext, PermissionService $permissionService, $hasPermissions)
-    {
-        $this->securityContext   = $securityContext;
+    public function __construct(
+        SecurityContextInterface $securityContext,
+        PermissionService $permissionService,
+        $hasPermissions
+    ) {
         $this->permissionService = $permissionService;
+        $this->securityContext   = $securityContext;
         $this->hasPermissions    = $hasPermissions;
     }
 
@@ -41,11 +45,22 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
             return false;
         }
 
+        $context              = mb_strtoupper($context);
+        $criteria             = mb_strtoupper($criteria);
+
         $permissions          = is_array($permissions) ? $permissions : array($permissions);
         $countPermissions     = count($permissions);
-        $context              = mb_strtoupper($context);
-        $allowedPermissions   = $this->getAllowedPermissions($loggedUser);
 
+        $allowedPermissions   = $this->getAllowedPermissions($loggedUser);
+        $unallowedPermissions = $this->getUnallowedPermissions($permissions, $allowedPermissions, $context);
+
+        $criteriaStrategy = CriteriaFactory::get($criteria);
+
+        return $criteriaStrategy->validate($unallowedPermissions, $countPermissions);
+    }
+
+    public function getUnallowedPermissions($permissions, $allowedPermissions, $context)
+    {
         foreach ($permissions as $key => $permission) {
             $permission = mb_strtoupper($permission);
 
@@ -55,21 +70,6 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
                 unset($permissions[$key]);
             }
         }
-
-        $andCriteria = $this->checkAndCriteria($permissions, $criteria);
-        $orCriteria  = $this->checkOrCriteria($permissions, $countPermissions, $criteria);
-
-        return $andCriteria || $orCriteria;
-    }
-
-    public function checkAndCriteria($permissions, $criteria)
-    {
-        return $criteria == AccessControlService::CRITERIA_AND && sizeof($permissions) == 0;
-    }
-
-    public function checkOrCriteria($permissions, $countPermissions, $criteria)
-    {
-        return $criteria == AccessControlService::CRITERIA_OR && sizeof($permissions) < $countPermissions;
     }
 
     public function getAllowedPermissions($loggedUser)
