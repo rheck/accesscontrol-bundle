@@ -30,7 +30,7 @@ services:
 
     rheck.access_control.default.strategy:
         class:     %rheck.access_control.default.strategy.class%
-        arguments: [@doctrine.orm.entity_manager, @security.context, %rheck_access_control.has_permissions%]
+        arguments: [@security.context, @rheck.access_control.permission.service, %rheck_access_control.has_permissions%]
 
     rheck.access_control.access.control.extension:
         class:  %rheck.access_control.access.control.extension.class%
