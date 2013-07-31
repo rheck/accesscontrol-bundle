@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManager;
 
 class AccessControlService
 {
-    const STRATEGY_INTERFACE = 'Rheck\AccessControlBundle\Strategy\PermissionAccessStrategyInterface';
+    const STRATEGY_INTERFACE = 'Rheck\AccessControlBundle\Strategy\PermissionAccess\PermissionAccessStrategyInterface';
 
     const CRITERIA_AND = "AND";
     const CRITERIA_OR  = "OR";
