@@ -44,7 +44,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         $permissions          = is_array($permissions) ? $permissions : array($permissions);
         $countPermissions     = count($permissions);
         $context              = mb_strtoupper($context);
-        $allowedPermissions   = $this->getUserPermissions($loggedUser);
+        $allowedPermissions   = $this->getAllowedPermissions($loggedUser);
 
         foreach ($permissions as $key => $permission) {
             $permission = mb_strtoupper($permission);
@@ -64,7 +64,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         return false;
     }
 
-    public function getUserPermissions($loggedUser)
+    public function getAllowedPermissions($loggedUser)
     {
         $hasPermissionsArray = explode('.', $this->hasPermissions);
 
@@ -73,36 +73,32 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         return $this->getPermissions($loggedUser, $hasPermissionsArray);
     }
 
+    public function getEntityPermissions($object)
+    {
+        if ($object instanceof PersistentCollection) {
+            $permissions = array();
+
+            foreach ($object as $o) {
+                $permissions = array_merge($permissions, $o->getPermissions()->toArray());
+            }
+
+            return $permissions;
+        }
+
+        return $object->getPermissions();
+    }
+
     public function getPermissions($object, $objectArray)
     {
         if (!count($objectArray)) {
-            if ($object instanceof PersistentCollection) {
-                $permissions = array();
-
-                foreach ($object as $o) {
-                    $permissions = array_merge($permissions, $o->getPermissions()->toArray());
-                }
-
-                return $permissions;
-            }
-
-            return $object->getPermissions();
+            $this->getEntityPermissions($object);
         }
 
         $reflectionObject   = new \ReflectionObject($object);
         $reflectionProperty = $reflectionObject->getProperty(array_shift($objectArray));
 
-        $isPrivateOrProtected = false;
-        if ($reflectionProperty->isPrivate() || $reflectionProperty->isProtected()) {
-            $isPrivateOrProtected = true;
-            $reflectionProperty->setAccessible(true);
-        }
-
+        $reflectionProperty->setAccessible(true);
         $propertyValue = $reflectionProperty->getValue($object);
-
-        if ($isPrivateOrProtected) {
-            $reflectionProperty->setAccessible(false);
-        }
 
         return $this->getPermissions($propertyValue, $objectArray);
     }

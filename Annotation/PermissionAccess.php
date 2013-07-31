@@ -21,17 +21,18 @@ class PermissionAccess
             unset($options['value']);
         }
 
-        if (isset($options['permissions'])) {
-            $options['permissions'] = is_array($options['permissions']) ? $options['permissions'] : array($options['permissions']);
-        }
-
         foreach ($options as $key => $value) {
-            if (!property_exists($this, $key)) {
-                throw new \InvalidArgumentException(sprintf('Property "%s" does not exist', $key));
+            $method = 'set'.str_replace('_', '', $key);
+            if (!method_exists($this, $method)) {
+                throw new \BadMethodCallException(sprintf("Unknown property '%s' on annotation '%s'.", $key, get_class($this)));
             }
-
-            $this->$key = $value;
+            $this->$method($value);
         }
+    }
+
+    public function setPermissions($permissions)
+    {
+        $this->permissions = $permissions;
     }
 
     public function getPermissions()
@@ -39,14 +40,29 @@ class PermissionAccess
         return $this->permissions;
     }
 
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
     public function getContext()
     {
         return $this->context;
     }
 
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+    }
+
     public function getCriteria()
     {
         return $this->criteria;
+    }
+
+    public function setStrategy($strategy)
+    {
+        $this->strategy = $strategy;
     }
 
     public function getStrategy()
