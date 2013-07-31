@@ -14,3 +14,7 @@ tools:
         enabled: true
         filter:
             excluded_paths: ["vendor/*"]
+    php_pdepend:
+        enabled: true
+        filter:
+            excluded_paths: ["vendor/*"]
