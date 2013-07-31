@@ -101,7 +101,7 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
     public function getPermissions($object, $objectArray)
     {
         if (!count($objectArray)) {
-            $this->getEntityPermissions($object);
+            return $this->getEntityPermissions($object);
         }
 
         $reflectionObject   = new \ReflectionObject($object);

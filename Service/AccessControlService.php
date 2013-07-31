@@ -52,7 +52,7 @@ class AccessControlService
         return true;
     }
 
-    public function getStrategyReturn($strategyReturn)
+    public function checkStrategyReturn($strategyReturn)
     {
         if (is_bool($strategyReturn)) {
             return $strategyReturn;
