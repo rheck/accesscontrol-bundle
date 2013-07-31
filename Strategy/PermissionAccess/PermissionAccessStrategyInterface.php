@@ -1,6 +1,6 @@
 <?php
 
-namespace Rheck\AccessControlBundle\Strategy;
+namespace Rheck\AccessControlBundle\Strategy\PermissionAccess;
 
 interface PermissionAccessStrategyInterface
 {

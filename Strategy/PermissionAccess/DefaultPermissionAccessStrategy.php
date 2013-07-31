@@ -1,6 +1,6 @@
 <?php
 
-namespace Rheck\AccessControlBundle\Strategy;
+namespace Rheck\AccessControlBundle\Strategy\PermissionAccess;
 
 use Rheck\AccessControlBundle\Factory\CriteriaFactory;
 use Rheck\AccessControlBundle\Service\AccessControlService;
@@ -70,6 +70,8 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
                 unset($permissions[$key]);
             }
         }
+
+        return $permissions;
     }
 
     public function getAllowedPermissions($loggedUser)

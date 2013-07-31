@@ -1,6 +1,6 @@
 <?php
 
-namespace Rheck\AccessControlBundle\Strategy;
+namespace Rheck\AccessControlBundle\Strategy\Criteria;
 
 class AndCriteriaStrategy implements CriteriaStrategyInterface
 {
