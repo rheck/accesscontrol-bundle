@@ -1,7 +1,10 @@
 before_commands:
     - composer install --dev
 tools:
-    php_cs_fixer: true
+    php_cs_fixer: 
+        enabled: true
+        filter:
+            excluded_paths: ["vendor/*"]
     php_code_coverage:
         enabled: true
         filter:
