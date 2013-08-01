@@ -3,12 +3,13 @@
 namespace Rheck\AccessControlBundle\Driver;
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Rheck\AccessControlBundle\Service\AccessControlService;
-use Rheck\AccessControlBundle\Annotation\PermissionAccess;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Doctrine\Common\Annotations\Reader;
 
-class AccessControlDriver
+class AccessControlDriver implements EventSubscriberInterface
 {
     private $reader;
     private $accessControlService;
@@ -51,5 +52,12 @@ class AccessControlDriver
         if (!$hasPermission) {
             throw new AccessDeniedHttpException('You are not allowed to access this route.');
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => array(array('onKernelController', 20))
+        );
     }
 }

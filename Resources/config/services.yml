@@ -21,7 +21,7 @@ services:
         class:     %rheck.access_control.access_control.annotation_driver.class%
         arguments: [@annotation_reader, @rheck.access_control.access.control.service]
         tags:
-            -  { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            -  { name: kernel.event_subscriber }
 
     rheck.access_control.access.control.service:
         class:     %rheck.access_control.access.control.service.class%
