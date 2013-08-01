@@ -1,4 +1,6 @@
 parameters:
+    rheck.access_control.security_context.adapter.class: Rheck\AccessControlBundle\Adapter\SecurityContextAdapter
+
     rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Driver\AccessControlDriver
 
     rheck.access_control.access.control.service.class:     Rheck\AccessControlBundle\Service\AccessControlService
@@ -10,6 +12,11 @@ parameters:
     rheck.access_control.access.control.extension.class: Rheck\AccessControlBundle\Extension\AccessControlExtension
 
 services:
+    rheck.access_control.security_context.adapter:
+        class: %rheck.access_control.security_context.adapter.class%
+        calls:
+            - [setSecurityContext, ["@security.context"]]
+
     rheck.access_control.access_control.annotation_driver:
         class:     %rheck.access_control.access_control.annotation_driver.class%
         arguments: [@annotation_reader, @rheck.access_control.access.control.service]
@@ -31,7 +38,7 @@ services:
     rheck.access_control.default.strategy:
         class:     %rheck.access_control.default.strategy.class%
         calls:
-            - [setSecurityContext, ["@security.context"]]
+            - [setSecurityContextAdapter, ["@rheck.access_control.security_context.adapter"]]
             - [setPermissionService, ["@rheck.access_control.permission.service"]]
             - [setHasPermissions, ["%rheck_access_control.has_permissions%"]]
 

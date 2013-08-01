@@ -2,6 +2,7 @@
 
 namespace Rheck\AccessControlBundle\Strategy\PermissionAccess;
 
+use Rheck\AccessControlBundle\Adapter\SecurityContextAdapter;
 use Rheck\AccessControlBundle\Factory\CriteriaFactory;
 use Rheck\AccessControlBundle\Service\AccessControlService;
 use Symfony\Component\Security\Core\SecurityContextInterface;
@@ -10,13 +11,13 @@ use Doctrine\ORM\PersistentCollection;
 
 class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterface
 {
+    protected $securityContextAdapter;
     protected $permissionService;
-    protected $securityContext;
     protected $hasPermissions;
 
-    public function setSecurityContext(SecurityContextInterface $securityContext)
+    public function setSecurityContextAdapter(SecurityContextAdapter $securityContextAdapter)
     {
-        $this->securityContext = $securityContext;
+        $this->securityContextAdapter = $securityContextAdapter;
     }
 
     public function setPermissionService(PermissionService $permissionService)
@@ -29,24 +30,9 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
         $this->hasPermissions = $hasPermissions;
     }
 
-    public function getLoggedUser()
-    {
-        $authToken = $this->securityContext->getToken();
-        if (is_null($authToken) || $authToken->isAuthenticated() === false) {
-            return false;
-        }
-
-        $loggedUser = $authToken->getUser();
-        if (is_null($loggedUser)) {
-            return false;
-        }
-
-        return $loggedUser;
-    }
-
     public function run($permissions, $context, $criteria)
     {
-        if (false === ($loggedUser = $this->getLoggedUser())) {
+        if (false === ($loggedUser = $this->securityContextAdapter->getLogged())) {
             return false;
         }
 
