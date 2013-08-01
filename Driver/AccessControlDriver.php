@@ -26,6 +26,19 @@ class AccessControlDriver implements EventSubscriberInterface
             return;
         }
 
+        preg_match('/(.*Bundle)/i', get_class($controller[0]), $matches);
+//        preg_match('/^(.*Bundle\\\\).*?$/', get_class($controller[0]), $matches);
+        $bundleNamespace = reset($matches);
+        $bundleName      = str_replace('\\', '', $bundleNamespace);
+
+        $bundle = new \ReflectionClass('\\' . $bundleNamespace . '\\' . $bundleName);
+
+        $bundleAnnotation = $this->reader->getClassAnnotation($bundle, 'Rheck\AccessControlBundle\Annotation\PermissionAccess');
+
+        if (!is_null($bundleAnnotation)) {
+            $this->checkPermission($bundleAnnotation);
+        }
+
         $object = new \ReflectionObject($controller[0]);
         $method = $object->getMethod($controller[1]);
 
