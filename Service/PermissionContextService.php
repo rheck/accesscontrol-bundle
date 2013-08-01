@@ -15,11 +15,11 @@ class PermissionContextService
 
     public function getPermissionContext($contextName)
     {
-        $permissionContextRepository = $this->objectManager->getRepository('RheckAccessControlBundle:PermissionContext');
+        $contextRepository = $this->objectManager->getRepository('RheckAccessControlBundle:PermissionContext');
 
-        $permissionContext = $permissionContextRepository->findOneByName($contextName);
+        $permissionContext = $contextRepository->findOneByName($contextName);
         if (is_null($permissionContext)) {
-            $permissionContext = $permissionContextRepository->createPermissionContext($contextName);
+            $permissionContext = $contextRepository->createPermissionContext($contextName);
         }
 
         return $permissionContext;

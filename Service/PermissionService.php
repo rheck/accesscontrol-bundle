@@ -7,12 +7,12 @@ use Doctrine\Common\Persistence\ObjectManager;
 class PermissionService
 {
     protected $objectManager;
-    protected $permissionContextService;
+    protected $contextService;
 
-    public function __construct(ObjectManager $objectManager, PermissionContextService $permissionContextService)
+    public function __construct(ObjectManager $objectManager, PermissionContextService $contextService)
     {
-        $this->objectManager            = $objectManager;
-        $this->permissionContextService = $permissionContextService;
+        $this->objectManager  = $objectManager;
+        $this->contextService = $contextService;
     }
 
     public function getPersistedPermission($permissionName, $contextName)
@@ -21,7 +21,7 @@ class PermissionService
 
         $permission = $permissionRepository->findOneByNameAndContext($permissionName, $contextName);
         if (is_null($permission)) {
-            $permissionContext = $this->permissionContextService->getPermissionContext($contextName);
+            $permissionContext = $this->contextService->getPermissionContext($contextName);
 
             $permission = $permissionRepository->createPermission($permissionName, $permissionContext);
         }

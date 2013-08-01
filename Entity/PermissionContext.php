@@ -18,34 +18,34 @@ class PermissionContext
     const DEFAULT_CONTEXT = 'SYSTEM';
 
     /**
-     * @var integer $id
+     * @var integer $identifier
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $identifier;
 
     /**
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $label
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private $label;
+    protected $label;
 
     /**
      * @var string $description
      *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
-    private $description;
+    protected $description;
 
     /**
      * @var array Permission $permissions
@@ -62,7 +62,7 @@ class PermissionContext
 
     public function getId()
     {
-        return $this->id;
+        return $this->identifier;
     }
 
     public function setName($name)
