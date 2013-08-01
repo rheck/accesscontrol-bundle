@@ -14,14 +14,19 @@ class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterfa
     protected $securityContext;
     protected $hasPermissions;
 
-    public function __construct(
-        SecurityContextInterface $securityContext,
-        PermissionService $permissionService,
-        $hasPermissions
-    ) {
+    public function setSecurityContext(SecurityContextInterface $securityContext)
+    {
+        $this->securityContext = $securityContext;
+    }
+
+    public function setPermissionService(PermissionService $permissionService)
+    {
         $this->permissionService = $permissionService;
-        $this->securityContext   = $securityContext;
-        $this->hasPermissions    = $hasPermissions;
+    }
+
+    public function setHasPermissions($hasPermissions)
+    {
+        $this->hasPermissions = $hasPermissions;
     }
 
     public function getLoggedUser()

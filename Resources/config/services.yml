@@ -30,7 +30,10 @@ services:
 
     rheck.access_control.default.strategy:
         class:     %rheck.access_control.default.strategy.class%
-        arguments: [@security.context, @rheck.access_control.permission.service, %rheck_access_control.has_permissions%]
+        calls:
+            - [setSecurityContext, ["@security.context"]]
+            - [setPermissionService, ["@rheck.access_control.permission.service"]]
+            - [setHasPermissions, ["%rheck_access_control.has_permissions%"]]
 
     rheck.access_control.access.control.extension:
         class:  %rheck.access_control.access.control.extension.class%
