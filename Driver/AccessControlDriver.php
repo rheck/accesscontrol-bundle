@@ -28,24 +28,28 @@ class AccessControlDriver
         $object = new \ReflectionObject($controller[0]);
         $method = $object->getMethod($controller[1]);
 
-        foreach ($this->reader->getMethodAnnotations($method) as $methodAnnotation) {
+        $classAnnotation = $this->reader->getClassAnnotation($object, 'Rheck\AccessControlBundle\Annotation\PermissionAccess');
+        if (!is_null($classAnnotation)) {
+            $this->checkPermission($classAnnotation);
+        }
+
+        $methodAnnotation = $this->reader->getMethodAnnotation($method, 'Rheck\AccessControlBundle\Annotation\PermissionAccess');
+        if (!is_null($methodAnnotation)) {
             $this->checkPermission($methodAnnotation);
         }
     }
 
     public function checkPermission($methodAnnotation)
     {
-        if ($methodAnnotation instanceof PermissionAccess) {
-            $hasPermission = $this->accessControlService->checkPermission(
-                $methodAnnotation->getPermissions(),
-                $methodAnnotation->getContext(),
-                $methodAnnotation->getCriteria(),
-                $methodAnnotation->getStrategy()
-            );
+        $hasPermission = $this->accessControlService->checkPermission(
+            $methodAnnotation->getPermissions(),
+            $methodAnnotation->getContext(),
+            $methodAnnotation->getCriteria(),
+            $methodAnnotation->getStrategy()
+        );
 
-            if (!$hasPermission) {
-                throw new AccessDeniedHttpException('You are not allowed to access this route.');
-            }
+        if (!$hasPermission) {
+            throw new AccessDeniedHttpException('You are not allowed to access this route.');
         }
     }
 }
