@@ -36,6 +36,6 @@ class AccessControlExtension extends \Twig_Extension
         $criteria    = "AND",
         $strategy    = "rheck.access_control.default.strategy"
     ) {
-        return $this->accessControl->checkPermission($permissions, $context, $criteria, $strategy);
+        return $this->accessControlService->checkPermission($permissions, $context, $criteria, $strategy);
     }
 }
