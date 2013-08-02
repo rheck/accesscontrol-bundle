@@ -21,6 +21,8 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
+                <directory>./Entity</directory>
+                <directory>./Repository</directory>
                 <directory>./Resources</directory>
                 <directory>./Tests</directory>
                 <directory>./vendor</directory>
