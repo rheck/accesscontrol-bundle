@@ -19,6 +19,16 @@ class SecurityContextAdapterTest extends \PHPUnit_Framework_TestCase
         return $tokenMock;
     }
 
+    private function getUnauthenticatedTokenMock()
+    {
+        $tokenMock = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+        $tokenMock->expects($this->any())
+            ->method('isAuthenticated')
+            ->will($this->returnValue(false));
+
+        return $tokenMock;
+    }
+
     private function getSecurityContextMock($tokenMock)
     {
         $securityContextMock = $this->getMock('Symfony\Component\Security\Core\SecurityContextInterface');
@@ -30,6 +40,19 @@ class SecurityContextAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testGetLogged()
+    {
+        $tokenMock = $this->getUnauthenticatedTokenMock();
+        $securityContextMock = $this->getSecurityContextMock($tokenMock);
+
+        $securityContextAdapter = new SecurityContextAdapter();
+        $securityContextAdapter->setSecurityContext($securityContextMock);
+
+        $loggedUser = $securityContextAdapter->getLogged();
+
+        $this->assertFalse($loggedUser);
+    }
+
+    public function testGetLoggedFalse()
     {
         $userMock = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
         $tokenMock = $this->getTokenMock($userMock);

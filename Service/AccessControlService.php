@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Rheck\AccessControlBundle\Exception\InvalidReturnStrategyException;
 use Rheck\AccessControlBundle\Exception\MissingInterfaceException;
 use Rheck\AccessControlBundle\Exception\StrategyNotFoundException;
+use Rheck\AccessControlBundle\Adapter\ServiceContainerAdapter;
 use Symfony\Component\Security\Core\SecurityContext;
 use Doctrine\ORM\EntityManager;
 
@@ -16,21 +17,21 @@ class AccessControlService
     const CRITERIA_AND = "AND";
     const CRITERIA_OR  = "OR";
 
-    protected $serviceContainer;
+    protected $serviceContainerAdapter;
 
-    public function __construct($serviceContainer)
+    public function __construct(ServiceContainerAdapter $serviceContainerAdapter)
     {
-        $this->serviceContainer = $serviceContainer;
+        $this->serviceContainerAdapter = $serviceContainerAdapter;
     }
 
-    public function getServiceContainer()
+    public function getServiceContainerAdapter()
     {
-        return $this->serviceContainer;
+        return $this->serviceContainerAdapter;
     }
 
     public function getStrategy($strategy)
     {
-        $strategyContainer = $this->getServiceContainer();
+        $strategyContainer = $this->getServiceContainerAdapter();
 
         try {
             return $strategyContainer->get($strategy);

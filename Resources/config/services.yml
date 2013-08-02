@@ -1,5 +1,6 @@
 parameters:
     rheck.access_control.security_context.adapter.class: Rheck\AccessControlBundle\Adapter\SecurityContextAdapter
+    rheck.access_control.service_container.adapter.class: Rheck\AccessControlBundle\Adapter\ServiceContainerAdapter
 
     rheck.access_control.access_control.annotation_driver.class: Rheck\AccessControlBundle\Driver\AccessControlDriver
 
@@ -23,9 +24,14 @@ services:
         tags:
             -  { name: kernel.event_subscriber }
 
+    rheck.access_control.service_container.adapter:
+        class: %rheck.access_control.service_container.adapter.class%
+        calls:
+            - [setServiceContainer, ["@service_container"]]
+
     rheck.access_control.access.control.service:
         class:     %rheck.access_control.access.control.service.class%
-        arguments: [@service_container]
+        arguments: [@rheck.access_control.service_container.adapter]
 
     rheck.access_control.permission.service:
         class:     %rheck.access_control.permission.service.class%
