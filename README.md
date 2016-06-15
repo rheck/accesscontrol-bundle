@@ -1,11 +1,6 @@
 # Access Control Bundle #
 
-[![Build Status](https://travis-ci.org/rheck/accesscontrol-bundle.png)](https://travis-ci.org/rheck/accesscontrol-bundle)
-[![Total Downloads](https://poser.pugx.org/rheck/accesscontrol-bundle/d/total.png)](https://packagist.org/packages/rheck/accesscontrol-bundle)
-[![Latest Stable Version](https://poser.pugx.org/rheck/accesscontrol-bundle/v/stable.png)](https://packagist.org/packages/rheck/accesscontrol-bundle)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/badges/quality-score.png?s=6f6e981fc4d35e7ff9108ee96d2f3238c018a696)](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/)
-[![Scrutinizer Continuous Inspections](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/badges/general.png?s=26c468dbcc712407c4392e94bd354934ca03c446)](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/)
-[![Code Coverage](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/badges/coverage.png?s=5c188758b043eac90153226c83ded89ce7843971)](https://scrutinizer-ci.com/g/rheck/accesscontrol-bundle/)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/6c8e5eae-2e9c-49a9-a13f-16353ad8ef4c/big.png)](https://insight.sensiolabs.com/projects/6c8e5eae-2e9c-49a9-a13f-16353ad8ef4c)
 
 This Bundle is a easy solution for the route access control. You can choose to use the default strategy of the Bundle or create your own custom.
 
