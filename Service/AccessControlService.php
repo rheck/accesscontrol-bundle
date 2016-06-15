@@ -7,8 +7,6 @@ use Rheck\AccessControlBundle\Exception\InvalidReturnStrategyException;
 use Rheck\AccessControlBundle\Exception\MissingInterfaceException;
 use Rheck\AccessControlBundle\Exception\StrategyNotFoundException;
 use Rheck\AccessControlBundle\Adapter\ServiceContainerAdapter;
-use Symfony\Component\Security\Core\SecurityContext;
-use Doctrine\ORM\EntityManager;
 
 class AccessControlService
 {

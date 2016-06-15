@@ -2,7 +2,6 @@
     "name": "rheck/accesscontrol-bundle",
     "description": "Bundle to control the user access.",
     "keywords": ["annotations","authorization","access","permission"],
-    "homepage": "",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [

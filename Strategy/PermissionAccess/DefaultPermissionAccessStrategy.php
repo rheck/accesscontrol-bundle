@@ -3,10 +3,8 @@
 namespace Rheck\AccessControlBundle\Strategy\PermissionAccess;
 
 use Rheck\AccessControlBundle\Adapter\SecurityContextAdapter;
-use Rheck\AccessControlBundle\Factory\CriteriaFactory;
-use Rheck\AccessControlBundle\Service\AccessControlService;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Rheck\AccessControlBundle\Service\PermissionService;
+use Rheck\AccessControlBundle\Factory\CriteriaFactory;
 use Doctrine\ORM\PersistentCollection;
 
 class DefaultPermissionAccessStrategy implements PermissionAccessStrategyInterface
